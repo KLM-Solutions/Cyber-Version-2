@@ -277,71 +277,97 @@ def main():
     if 'show_instruction_editor' not in st.session_state:
         st.session_state.show_instruction_editor = False
 
-    st.title("Cyber Security Query System")
-
-    # Create columns for layout
-    col1, col2 = st.columns([3, 1])
-    
-    with col2:
-        if st.button("View/Edit System Instructions"):
+    # Sidebar for system instructions
+    with st.sidebar:
+        st.title("System Settings")
+        st.markdown("---")
+        
+        # Instruction Editor Toggle
+        st.subheader("System Instructions")
+        toggle_instructions = st.button(
+            "View/Edit Instructions" if not st.session_state.show_instruction_editor 
+            else "Hide Instructions"
+        )
+        
+        if toggle_instructions:
             st.session_state.show_instruction_editor = not st.session_state.show_instruction_editor
-            
+        
+        # Show instruction editor when toggled
         if st.session_state.show_instruction_editor:
-            st.text_area(
-                "Current System Instructions",
+            st.markdown("---")
+            instruction_text = st.text_area(
+                "Modify System Instructions:",
                 value=st.session_state.system_instruction,
-                height=300,
+                height=400,
                 key="instruction_editor"
             )
             
-            col3, col4 = st.columns(2)
-            with col3:
-                if st.button("Update Instructions"):
-                    st.session_state.system_instruction = st.session_state["instruction_editor"]
-                    st.success("Instructions updated!")
+            col1, col2 = st.columns(2)
+            with col1:
+                if st.button("Update", use_container_width=True):
+                    st.session_state.system_instruction = instruction_text
+                    st.success("Instructions updated")
             
-            with col4:
-                if st.button("Reset to Default"):
+            with col2:
+                if st.button("Reset Default", use_container_width=True):
                     st.session_state.system_instruction = DEFAULT_SYSTEM_INSTRUCTION
-                    st.success("Reset to default!")
-
-    with col1:
-        if not check_environment():
-            st.stop()
+                    st.success("Reset to default")
         
-        query = st.text_input("What would you like to know?")
+        # Show current instruction status
+        st.markdown("---")
+        st.markdown("**Current Status:**")
+        if st.session_state.system_instruction != DEFAULT_SYSTEM_INSTRUCTION:
+            st.info("Using custom instructions")
+        else:
+            st.info("Using default instructions")
 
-        if query:
-            with st.spinner("Processing your query..."):
-                results, analysis = process_query(query, TABLE_NAME)
-                
-                if results:
-                    formatted_data = format_response(query, results, analysis)
-                    response = get_llm_response(query, formatted_data)
+    # Main content area
+    st.title("Cyber Security Query System")
+    
+    if not check_environment():
+        st.stop()
+    
+    # Query input area
+    query = st.text_input(
+        "What would you like to know?",
+        placeholder="Enter your cybersecurity query here..."
+    )
 
-                    tab1, tab2, tab3 = st.tabs(["Analysis", "Raw Data", "System Info"])
+    if query:
+        with st.spinner("Processing your query..."):
+            results, analysis = process_query(query, TABLE_NAME)
+            
+            if results:
+                formatted_data = format_response(query, results, analysis)
+                response = get_llm_response(query, formatted_data)
 
-                    with tab1:
-                        st.markdown("### Analysis")
-                        st.write(response)
+                # Display results in tabs
+                tab1, tab2, tab3 = st.tabs(["Analysis", "Raw Data", "Query Details"])
 
-                    with tab2:
-                        st.markdown("### Retrieved Records")
-                        st.json(results)
-                        
-                        st.markdown("### Query Analysis")
-                        st.json(analysis)
-                        
-                    with tab3:
-                        st.markdown("### Current System Instructions")
+                with tab1:
+                    st.markdown("Analysis")
+                    st.write(response)
+
+                with tab2:
+                    st.markdown(" Retrieved Records")
+                    st.json(results)
+                    
+                    st.markdown(" Query Analysis")
+                    st.json(analysis)
+                    
+                with tab3:
+                    st.markdown(" System Configuration")
+                    with st.expander("View Current System Instructions"):
                         st.write(st.session_state.system_instruction)
-                        
-                        if st.session_state.system_instruction != DEFAULT_SYSTEM_INSTRUCTION:
-                            st.info("Using custom instructions")
-                        else:
-                            st.info("Using default instructions")
-                else:
-                    st.warning("No data found matching your query. Please try rephrasing your question.")
+                    
+                    st.markdown("Analysis Parameters")
+                    st.json({
+                        "query_focus": analysis['query_focus'],
+                        "time_frame": analysis.get('time_frame', 'Not specified'),
+                        "data_points": analysis.get('specific_data_points', [])
+                    })
+            else:
+                st.warning("No data found matching your query. Please try rephrasing your question.")
 
 if __name__ == "__main__":
     main()

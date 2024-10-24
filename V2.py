@@ -41,7 +41,7 @@ Format the response as a JSON object with these exact keys:
 }}
 """
             response = client.chat.completions.create(
-                model="gpt-4o-mini",  # Updated to latest model
+                model="gpt-4o-mini",  
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0,
                 max_tokens=500,
@@ -190,7 +190,7 @@ Format your response professionally and support your analysis with specific data
 """
 
         response = client.chat.completions.create(
-            model="gpt-4o-mini",  # Updated to latest model
+            model="gpt-4o-mini",  
             messages=[{"role": "user", "content": prompt}],
             temperature=0.1,
             max_tokens=1000

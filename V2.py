@@ -311,14 +311,7 @@ def main():
                     st.session_state.system_instruction = DEFAULT_SYSTEM_INSTRUCTION
                     st.success("Reset to default")
         
-        # Show current instruction status
-        st.markdown("---")
-        st.markdown("**Current Status:**")
-        if st.session_state.system_instruction != DEFAULT_SYSTEM_INSTRUCTION:
-            st.info("Using custom instructions")
-        else:
-            st.info("Using default instructions")
-
+      
     # Main content area
     st.title("Cyber Security Query System")
     

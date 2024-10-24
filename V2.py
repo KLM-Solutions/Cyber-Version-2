@@ -350,10 +350,7 @@ def main():
                     st.json(analysis)
                     
                 with tab3:
-                    st.markdown("### System Configuration")
-                    with st.expander("View Current System Instructions"):
-                        st.write(st.session_state.system_instruction)
-                    
+                   
                     st.markdown("### Analysis Parameters")
                     st.json({
                         "query_focus": analysis['query_focus'],

@@ -278,7 +278,8 @@ def main():
         st.session_state.show_instruction_editor = False
 
     # Sidebar for system instructions
- 
+    with st.sidebar:
+        
         # Instruction Editor Toggle
         st.subheader("System Instructions")
         toggle_instructions = st.button(
@@ -310,7 +311,13 @@ def main():
                     st.session_state.system_instruction = DEFAULT_SYSTEM_INSTRUCTION
                     st.success("Reset to default")
         
-      
+        # Show current instruction status
+        st.markdown("---")
+        st.markdown("**Current Status:**")
+        if st.session_state.system_instruction != DEFAULT_SYSTEM_INSTRUCTION:
+            st.info("Using custom instructions")
+        else:
+            st.info("Using default instructions")
 
     # Main content area
     st.title("Cyber Security Query System")
@@ -336,22 +343,22 @@ def main():
                 tab1, tab2, tab3 = st.tabs(["Analysis", "Raw Data", "Query Details"])
 
                 with tab1:
-                    st.markdown("Analysis")
+                    st.markdown("### Analysis")
                     st.write(response)
 
                 with tab2:
-                    st.markdown(" Retrieved Records")
+                    st.markdown("### Retrieved Records")
                     st.json(results)
                     
-                    st.markdown(" Query Analysis")
+                    st.markdown("### Query Analysis")
                     st.json(analysis)
                     
                 with tab3:
-                    st.markdown(" System Configuration")
+                    st.markdown("### System Configuration")
                     with st.expander("View Current System Instructions"):
                         st.write(st.session_state.system_instruction)
                     
-                    st.markdown("Analysis Parameters")
+                    st.markdown("### Analysis Parameters")
                     st.json({
                         "query_focus": analysis['query_focus'],
                         "time_frame": analysis.get('time_frame', 'Not specified'),
@@ -359,6 +366,5 @@ def main():
                     })
             else:
                 st.warning("No data found matching your query. Please try rephrasing your question.")
-
 if __name__ == "__main__":
     main()

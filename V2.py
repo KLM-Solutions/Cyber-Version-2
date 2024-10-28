@@ -10,7 +10,7 @@ import os
 # Configuration
 OPENAI_API_KEY = st.secrets["openai_api_key"]
 DB_CONN = st.secrets["database_url"]
-TABLE_NAME = 'sitrep_2024'
+TABLE_NAME = 'sitreps_2024'
 EMBEDDING_MODEL = "text-embedding-ada-002"
 
 DEFAULT_SYSTEM_INSTRUCTION = """You are an AI assistant specialized in cybersecurity incident analysis. Your task is to analyze the given query and related cybersecurity data, and provide a focused, relevant response. Follow these guidelines:
